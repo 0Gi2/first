@@ -1,6 +1,7 @@
 import streamlit as st
 import sqlite3
 import pandas as pd
+import os.path
 
 con = sqlite3.connect('db.db')
 cur = con.cursor()
@@ -18,11 +19,15 @@ if menu == '로그인':
     login_pw = st.text_input('PW',placeholder='비밀번호를 입력하세요',
                              type='password')
     login_btn = st.button('log in')
+    st.sidebar.write('로그인')
     if login_btn:
         user_info = login_user(login_id,login_pw)
-        st.image('./img/test.jpg')
-        st.write(user_info[4], '님 환영합니다.')
-    st.sidebar.write('로그인')
+        file_name = './img/'+user_info[0]+'.jpg'
+        if os.path.exists(file_name):
+            st.sidebar.image(file_name)
+            st.sidebar.write(user_info[4], '님 환영합니다.')
+        else:
+            st.sidebar.write(user_info[4],'님 환영합니다.')
 if menu == '회원가입':
     st.subheader('회원가입')
     st.info('다음 양식을 모두 입력 후 회원가입 버튼을 클릭하세요.')
