@@ -10,7 +10,7 @@ def login_user(id, pw):
     cur.execute(f"SELECT * FROM users WHERE id='{id}' and pwd='{pw}'")
     return cur.fetchone()
 
-menu = st.sidebar.selectbox("MENU",options=['로그인','회원가입','회원목록'])
+menu = st.sidebar.selectbox("MENU",options=['로그인','회원가입','회원목록','회원성별'])
 
 if menu == '로그인':
     st.subheader('로그인')
@@ -43,8 +43,8 @@ if menu == '회원가입':
         if upw != upw_chk :
             st.error('비밀번호가 일치하지 않습니다.')
             st.stop()
-        cur.execute(f"INSERT INTO users(id,pwd,age,gender,name) "
-                    f"VALUES('{uid}','{upw}',{uage},'{ugender}','{uname}')")
+        cur.execute(f"INSERT INTO users(id,pwd,age,gender,name,cd) "
+                    f"VALUES('{uid}','{upw}',{uage},'{ugender}','{uname}',CURRENT_DATE)")
         st.success('회원가입에 성공했습니다.')
         con.commit()
 if menu == '회원목록':
@@ -52,3 +52,6 @@ if menu == '회원목록':
     df = pd.read_sql('SELECT name,gender,age FROM users',con)
     st.dataframe(df)
     st.sidebar.write('회원목록')
+if menu == '회원성별':
+    df = pd.read_sql('SELECT gender, COUNT(*) as cnt FROM users group by gender',con)
+    st.dataframe(df)
